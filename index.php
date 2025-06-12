@@ -45,7 +45,9 @@ $modoEscuro = isset($_COOKIE['modo_escuro']) && $_COOKIE['modo_escuro'] === '1';
                             <button class="btn-like" onclick="curtir('<?= $img ?>')">
                                 ❤️ <span id="likes-<?= $img ?>"><?= $likes[$img] ?? 0 ?></span>
                             </button>
-                            <button class="btn-comment" onclick="abrirComentarios('<?= $img ?>')">💬</button>
+                            <button class="btn-comment" onclick="abrirComentarios('<?= $img ?>')">
+                                💬 <span id="comments-<?= $img ?>"><?= count($comentarios) ?></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -132,6 +134,33 @@ $modoEscuro = isset($_COOKIE['modo_escuro']) && $_COOKIE['modo_escuro'] === '1';
             const modal = new bootstrap.Modal(document.getElementById('modal-' + imgId));
             modal.show();
         }
+
+        // No seu formulário de comentários, substitua por:
+        document.querySelectorAll('form[action="comentario.php"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const imgId = formData.get('imagem');
+
+                fetch('comentario.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Atualiza a contagem de comentários
+                            document.getElementById('comments-' + imgId).innerText = data.count;
+                            // Recarrega os comentários no modal (opcional)
+                            const modalBody = document.querySelector('#modal-' + imgId + ' .modal-body');
+                            // Aqui você pode adicionar lógica para atualizar a lista de comentários
+                            // ou simplesmente recarregar a página
+                            location.reload();
+                        }
+                    });
+            });
+        });
     </script>
 </body>
 

@@ -8,5 +8,5 @@ $comentarios = file_exists($arquivo) ? json_decode(file_get_contents($arquivo), 
 $comentarios[] = ['texto' => htmlspecialchars($comentario), 'data' => date('d/m/Y H:i')];
 file_put_contents($arquivo, json_encode($comentarios, JSON_PRETTY_PRINT));
 
-header('Location: index.php#img-' . $imagem);
+echo json_encode(['success' => true, 'count' => count($comentarios)]);
 exit;
